@@ -10,6 +10,7 @@ import Rights from "./pages/Rights";
 import Search from "./pages/Search";
 import Auth from "./pages/Auth";
 import ContentDetail from "./pages/ContentDetail";
+import MisinformationDetector from "./pages/MisinformationDetector";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/search" element={<Search />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/content/:id" element={<ContentDetail />} />
+          <Route path="/misinformation-detector" element={<MisinformationDetector />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

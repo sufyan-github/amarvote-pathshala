@@ -1,1 +1,4 @@
 project_id = "lgkbqwakwrjommcczylb"
+
+[functions.analyze-misinformation]
+verify_jwt = false

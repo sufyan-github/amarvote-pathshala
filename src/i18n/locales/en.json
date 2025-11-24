@@ -4,6 +4,7 @@
     "voterEducation": "Voter Education",
     "civicServices": "Civic Services",
     "rights": "Rights & Duties",
+    "misinformationDetector": "Fact Check",
     "search": "Search",
     "login": "Login",
     "logout": "Logout",
@@ -91,5 +92,6 @@
     "language": "Language",
     "bangla": "বাংলা",
     "english": "English"
-  }
+  },
+  "error": "Error"
 }

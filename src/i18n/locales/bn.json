@@ -4,6 +4,7 @@
     "voterEducation": "ভোটার শিক্ষা",
     "civicServices": "নাগরিক সেবা",
     "rights": "অধিকার ও দায়িত্ব",
+    "misinformationDetector": "তথ্য যাচাই",
     "search": "খুঁজুন",
     "login": "লগইন",
     "logout": "লগআউট",
@@ -91,5 +92,6 @@
     "language": "ভাষা",
     "bangla": "বাংলা",
     "english": "English"
-  }
+  },
+  "error": "ত্রুটি"
 }
