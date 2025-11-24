@@ -14,7 +14,230 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bookmarks: {
+        Row: {
+          content_id: string
+          created_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          content_id: string
+          created_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          content_id?: string
+          created_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookmarks_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content: {
+        Row: {
+          category: string
+          content_bn: string
+          content_en: string | null
+          created_at: string | null
+          description_bn: string | null
+          description_en: string | null
+          featured: boolean | null
+          id: string
+          is_published: boolean | null
+          tags: string[] | null
+          title_bn: string
+          title_en: string | null
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          content_bn: string
+          content_en?: string | null
+          created_at?: string | null
+          description_bn?: string | null
+          description_en?: string | null
+          featured?: boolean | null
+          id?: string
+          is_published?: boolean | null
+          tags?: string[] | null
+          title_bn: string
+          title_en?: string | null
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          content_bn?: string
+          content_en?: string | null
+          created_at?: string | null
+          description_bn?: string | null
+          description_en?: string | null
+          featured?: boolean | null
+          id?: string
+          is_published?: boolean | null
+          tags?: string[] | null
+          title_bn?: string
+          title_en?: string | null
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          audio_preference: string | null
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string
+          language_preference: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          audio_preference?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id: string
+          language_preference?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          audio_preference?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          language_preference?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      quiz_attempts: {
+        Row: {
+          attempted_at: string | null
+          id: string
+          is_correct: boolean
+          quiz_id: string
+          selected_answer: number
+          user_id: string
+        }
+        Insert: {
+          attempted_at?: string | null
+          id?: string
+          is_correct: boolean
+          quiz_id: string
+          selected_answer: number
+          user_id: string
+        }
+        Update: {
+          attempted_at?: string | null
+          id?: string
+          is_correct?: boolean
+          quiz_id?: string
+          selected_answer?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_attempts_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quizzes: {
+        Row: {
+          content_id: string
+          correct_answer: number
+          created_at: string | null
+          explanation_bn: string | null
+          explanation_en: string | null
+          id: string
+          options: Json
+          question_bn: string
+          question_en: string | null
+        }
+        Insert: {
+          content_id: string
+          correct_answer: number
+          created_at?: string | null
+          explanation_bn?: string | null
+          explanation_en?: string | null
+          id?: string
+          options: Json
+          question_bn: string
+          question_en?: string | null
+        }
+        Update: {
+          content_id?: string
+          correct_answer?: number
+          created_at?: string | null
+          explanation_bn?: string | null
+          explanation_en?: string | null
+          id?: string
+          options?: Json
+          question_bn?: string
+          question_en?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quizzes_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_progress: {
+        Row: {
+          completed: boolean | null
+          content_id: string
+          id: string
+          last_accessed: string | null
+          progress_percent: number | null
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          content_id: string
+          id?: string
+          last_accessed?: string | null
+          progress_percent?: number | null
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          content_id?: string
+          id?: string
+          last_accessed?: string | null
+          progress_percent?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_progress_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
