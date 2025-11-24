@@ -1,5 +1,5 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, BookOpen, Tag } from "lucide-react";
+import { ArrowLeft, BookOpen, Tag, Menu } from "lucide-react";
 import { useContentById, useContent } from "@/hooks/useContent";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
@@ -8,6 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
+import { 
+  SidebarProvider, 
+  SidebarTrigger 
+} from "@/components/ui/sidebar";
+import { 
+  TableOfContents, 
+  parseSections, 
+  ContentWithAnchors 
+} from "@/components/TableOfContents";
 
 const ContentDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -73,20 +82,40 @@ const ContentDetail = () => {
     ? content.content_bn
     : content.content_en || content.content_bn;
 
+  // Parse sections for table of contents
+  const sections = parseSections(contentText);
+
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Back Button */}
-        <Button
-          variant="ghost"
-          onClick={() => navigate(-1)}
-          className="mb-6 hover:bg-secondary"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          {isBangla ? "ফিরে যান" : "Back"}
-        </Button>
+    <SidebarProvider defaultOpen={true}>
+      <div className="min-h-screen bg-background flex flex-col w-full">
+        <Navigation />
+        
+        {/* Header with TOC Toggle */}
+        {sections.length > 0 && (
+          <div className="sticky top-16 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+            <div className="container mx-auto px-4 py-2 flex justify-end">
+              <SidebarTrigger className="flex items-center gap-2">
+                <Menu className="w-4 h-4" />
+                <span className="text-sm">
+                  {isBangla ? "সূচিপত্র" : "Table of Contents"}
+                </span>
+              </SidebarTrigger>
+            </div>
+          </div>
+        )}
+
+        <div className="flex flex-1 w-full">
+          <main className="flex-1 overflow-auto">
+            <div className="container mx-auto px-4 py-8 max-w-4xl">
+              {/* Back Button */}
+              <Button
+                variant="ghost"
+                onClick={() => navigate(-1)}
+                className="mb-6 hover:bg-secondary"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                {isBangla ? "ফিরে যান" : "Back"}
+              </Button>
 
         {/* Content Header */}
         <header className="mb-8 space-y-4">
@@ -133,7 +162,7 @@ const ContentDetail = () => {
         {/* Main Content */}
         <Card className="mb-8">
           <CardContent className="prose prose-slate dark:prose-invert max-w-none p-8">
-            <div className="whitespace-pre-wrap leading-relaxed">{contentText}</div>
+            <ContentWithAnchors content={contentText} sections={sections} />
           </CardContent>
         </Card>
 
@@ -181,8 +210,14 @@ const ContentDetail = () => {
             )}
           </div>
         )}
-      </main>
-    </div>
+            </div>
+          </main>
+
+          {/* Table of Contents Sidebar */}
+          {sections.length > 0 && <TableOfContents sections={sections} />}
+        </div>
+      </div>
+    </SidebarProvider>
   );
 };
 
