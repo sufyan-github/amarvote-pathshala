@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Home, BookOpen, FileText, Shield, Search, LogIn, LogOut } from "lucide-react";
+import { Home, BookOpen, FileText, Shield, Search, LogIn, LogOut, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
@@ -34,6 +34,7 @@ export const Navigation = () => {
     { path: "/voter-education", label: t('nav.voterEducation'), icon: BookOpen },
     { path: "/civic-services", label: t('nav.civicServices'), icon: FileText },
     { path: "/rights", label: t('nav.rights'), icon: Shield },
+    { path: "/misinformation-detector", label: t('nav.misinformationDetector'), icon: AlertTriangle },
     { path: "/search", label: t('nav.search'), icon: Search },
   ];
 
