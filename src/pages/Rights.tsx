@@ -5,7 +5,9 @@ import { useContent } from "@/hooks/useContent";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Shield, Scale, Users, BookOpen } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Rights = () => {
   const { t, i18n } = useTranslation();
@@ -72,9 +74,15 @@ const Rights = () => {
               <Shield className="h-10 w-10 text-primary" />
               <h1 className="text-4xl font-bold">{t("rights.title")}</h1>
             </div>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
               {t("rights.subtitle")}
             </p>
+            <Button asChild size="lg" className="gap-2">
+              <Link to="/report-violation">
+                <Shield className="h-5 w-5" />
+                {i18n.language === 'bn' ? 'অধিকার লঙ্ঘন রিপোর্ট করুন' : 'Report Rights Violation'}
+              </Link>
+            </Button>
           </div>
 
           <Tabs defaultValue="constitution" className="space-y-8">
