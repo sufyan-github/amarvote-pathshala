@@ -203,6 +203,72 @@ export type Database = {
           },
         ]
       }
+      rights_violation_reports: {
+        Row: {
+          admin_notes: string | null
+          authority_contact: string | null
+          authority_notified: boolean | null
+          category: Database["public"]["Enums"]["violation_category"]
+          created_at: string | null
+          description: string
+          evidence_files: Json | null
+          id: string
+          location: string
+          relevant_authority: string
+          resolution_details: string | null
+          status: Database["public"]["Enums"]["report_status"] | null
+          title: string
+          updated_at: string | null
+          user_id: string
+          violation_date: string
+          violator_name: string | null
+          violator_position: string | null
+          witnesses: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          authority_contact?: string | null
+          authority_notified?: boolean | null
+          category: Database["public"]["Enums"]["violation_category"]
+          created_at?: string | null
+          description: string
+          evidence_files?: Json | null
+          id?: string
+          location: string
+          relevant_authority: string
+          resolution_details?: string | null
+          status?: Database["public"]["Enums"]["report_status"] | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+          violation_date: string
+          violator_name?: string | null
+          violator_position?: string | null
+          witnesses?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          authority_contact?: string | null
+          authority_notified?: boolean | null
+          category?: Database["public"]["Enums"]["violation_category"]
+          created_at?: string | null
+          description?: string
+          evidence_files?: Json | null
+          id?: string
+          location?: string
+          relevant_authority?: string
+          resolution_details?: string | null
+          status?: Database["public"]["Enums"]["report_status"] | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+          violation_date?: string
+          violator_name?: string | null
+          violator_position?: string | null
+          witnesses?: string | null
+        }
+        Relationships: []
+      }
       user_progress: {
         Row: {
           completed: boolean | null
@@ -246,7 +312,23 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      report_status:
+        | "submitted"
+        | "under_review"
+        | "forwarded"
+        | "resolved"
+        | "rejected"
+      violation_category:
+        | "constitutional_rights"
+        | "human_rights"
+        | "police_misconduct"
+        | "government_service_denial"
+        | "corruption"
+        | "discrimination"
+        | "electoral_rights"
+        | "labor_rights"
+        | "property_rights"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -373,6 +455,26 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      report_status: [
+        "submitted",
+        "under_review",
+        "forwarded",
+        "resolved",
+        "rejected",
+      ],
+      violation_category: [
+        "constitutional_rights",
+        "human_rights",
+        "police_misconduct",
+        "government_service_denial",
+        "corruption",
+        "discrimination",
+        "electoral_rights",
+        "labor_rights",
+        "property_rights",
+        "other",
+      ],
+    },
   },
 } as const

@@ -13,6 +13,7 @@ import ContentDetail from "./pages/ContentDetail";
 import MisinformationDetector from "./pages/MisinformationDetector";
 import Features from "./pages/Features";
 import Assistant from "./pages/Assistant";
+import ReportViolation from "./pages/ReportViolation";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/misinformation-detector" element={<MisinformationDetector />} />
           <Route path="/features" element={<Features />} />
           <Route path="/assistant" element={<Assistant />} />
+          <Route path="/report-violation" element={<ReportViolation />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
