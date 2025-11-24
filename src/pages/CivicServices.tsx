@@ -2,30 +2,22 @@ import { Navigation } from "@/components/Navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreditCard, FileText, Heart, GraduationCap, Building, Phone } from "lucide-react";
+import { useContent } from "@/hooks/useContent";
+import { useLanguage } from "@/hooks/useLanguage";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 
 const CivicServices = () => {
-  const services = {
-    nid: [
-      { title: "NID কার্ড আবেদন", desc: "১৮ বছর বয়সে প্রথম NID এর জন্য আবেদন করুন", link: "www.nidw.gov.bd" },
-      { title: "NID সংশোধন", desc: "তথ্যে ভুল থাকলে সংশোধনের আবেদন করুন", link: "services.nidw.gov.bd" },
-      { title: "স্মার্ট কার্ড সংগ্রহ", desc: "ইউনিয়ন পরিষদ থেকে স্মার্ট NID সংগ্রহ করুন", link: "www.nidw.gov.bd" },
-    ],
-    documents: [
-      { title: "জন্ম নিবন্ধন", desc: "শিশুর জন্মের পর জন্ম নিবন্ধন করুন", link: "bdris.gov.bd" },
-      { title: "পাসপোর্ট আবেদন", desc: "অনলাইনে পাসপোর্টের জন্য আবেদন করুন", link: "www.dip.gov.bd" },
-      { title: "ট্রেড লাইসেন্স", desc: "ব্যবসা শুরু করতে ট্রেড লাইসেন্স নিন", link: "www.roc.gov.bd" },
-    ],
-    health: [
-      { title: "স্বাস্থ্য কার্ড", desc: "সরকারি হাসপাতালে চিকিৎসার জন্য কার্ড নিন", link: "www.dghs.gov.bd" },
-      { title: "টিকা কার্যক্রম", desc: "শিশুদের বিনামূল্যে টিকা সেবা পান", link: "www.epi.gov.bd" },
-      { title: "মাতৃত্বকালীন ভাতা", desc: "গর্ভবতী মায়েদের জন্য সরকারি সহায়তা", link: "www.dss.gov.bd" },
-    ],
-    education: [
-      { title: "প্রাথমিক শিক্ষা ভর্তি", desc: "সরকারি প্রাথমিক বিদ্যালয়ে ভর্তি", link: "www.dpe.gov.bd" },
-      { title: "উপবৃত্তি কার্যক্রম", desc: "মেধাবী ও দরিদ্র শিক্ষার্থীদের আর্থিক সহায়তা", link: "www.dshe.gov.bd" },
-      { title: "বিনামূল্যে বই", desc: "সরকারি বিদ্যালয়ে বিনামূল্যে পাঠ্যপুস্তক", link: "www.nctb.gov.bd" },
-    ],
-  };
+  const { data: guides, isLoading } = useContent('civic-services', 'guide');
+  const { isBangla } = useLanguage();
+
+  // Group guides by tags for tabs
+  const groupedGuides = guides?.reduce((acc, guide) => {
+    const tag = guide.tags?.[0] || 'other';
+    if (!acc[tag]) acc[tag] = [];
+    acc[tag].push(guide);
+    return acc;
+  }, {} as Record<string, typeof guides>) || {};
 
   const emergencyContacts = [
     { service: "জরুরি সেবা", number: "999", desc: "পুলিশ, ফায়ার, অ্যাম্বুলেন্স" },
@@ -34,68 +26,109 @@ const CivicServices = () => {
     { service: "শিশু হেল্পলাইন", number: "1098", desc: "শিশু সুরক্ষা সেবা" },
   ];
 
+  const tabConfig = {
+    nid: { icon: CreditCard, label: isBangla ? "NID সেবা" : "NID Services" },
+    documents: { icon: FileText, label: isBangla ? "ডকুমেন্ট" : "Documents" },
+    health: { icon: Heart, label: isBangla ? "স্বাস্থ্য" : "Health" },
+    education: { icon: GraduationCap, label: isBangla ? "শিক্ষা" : "Education" },
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
       
       <div className="container px-4 py-12">
         <div className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-foreground">নাগরিক সেবা</h1>
+          <h1 className="mb-4 text-4xl font-bold text-foreground">
+            {isBangla ? "নাগরিক সেবা" : "Civic Services"}
+          </h1>
           <p className="text-lg text-muted-foreground">
-            সরকারি সেবা ও সুবিধা সম্পর্কে জানুন এবং সহজে আবেদন করুন
+            {isBangla 
+              ? "সরকারি সেবা ও সুবিধা সম্পর্কে জানুন এবং সহজে আবেদন করুন"
+              : "Learn about government services and apply easily"}
           </p>
         </div>
 
-        <Tabs defaultValue="nid" className="mb-16">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
-            <TabsTrigger value="nid" className="flex items-center space-x-2">
-              <CreditCard className="h-4 w-4" />
-              <span>NID সেবা</span>
-            </TabsTrigger>
-            <TabsTrigger value="documents" className="flex items-center space-x-2">
-              <FileText className="h-4 w-4" />
-              <span>ডকুমেন্ট</span>
-            </TabsTrigger>
-            <TabsTrigger value="health" className="flex items-center space-x-2">
-              <Heart className="h-4 w-4" />
-              <span>স্বাস্থ্য</span>
-            </TabsTrigger>
-            <TabsTrigger value="education" className="flex items-center space-x-2">
-              <GraduationCap className="h-4 w-4" />
-              <span>শিক্ষা</span>
-            </TabsTrigger>
-          </TabsList>
+        {isLoading ? (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-16">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <Card key={i}>
+                <CardHeader>
+                  <Skeleton className="h-6 w-3/4 mb-2" />
+                  <Skeleton className="h-4 w-full" />
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-4 w-2/3" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : Object.keys(groupedGuides).length > 0 ? (
+          <Tabs defaultValue={Object.keys(groupedGuides)[0]} className="mb-16">
+            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
+              {Object.keys(groupedGuides).map((tag) => {
+                const config = tabConfig[tag as keyof typeof tabConfig];
+                const Icon = config?.icon || Building;
+                const label = config?.label || tag;
+                
+                return (
+                  <TabsTrigger key={tag} value={tag} className="flex items-center space-x-2">
+                    <Icon className="h-4 w-4" />
+                    <span>{label}</span>
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
 
-          {Object.entries(services).map(([key, serviceList]) => (
-            <TabsContent key={key} value={key} className="mt-6">
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {serviceList.map((service, index) => (
-                  <Card key={index} className="hover:shadow-md transition-shadow">
-                    <CardHeader>
-                      <CardTitle className="text-lg">{service.title}</CardTitle>
-                      <CardDescription>{service.desc}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <a 
-                        href={`https://${service.link}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-primary hover:underline flex items-center space-x-1"
-                      >
-                        <Building className="h-3 w-3" />
-                        <span>{service.link}</span>
-                      </a>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
-          ))}
-        </Tabs>
+            {Object.entries(groupedGuides).map(([tag, guideList]) => (
+              <TabsContent key={tag} value={tag} className="mt-6">
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {guideList.map((guide) => {
+                    const title = isBangla ? guide.title_bn : (guide.title_en || guide.title_bn);
+                    const description = isBangla ? guide.description_bn : (guide.description_en || guide.description_bn);
+                    
+                    return (
+                      <Card key={guide.id} className="hover:shadow-md transition-shadow">
+                        <CardHeader>
+                          <CardTitle className="text-lg flex items-start justify-between">
+                            <span>{title}</span>
+                            {guide.featured && (
+                              <Badge variant="secondary" className="ml-2 shrink-0">
+                                {isBangla ? "বৈশিষ্ট্যযুক্ত" : "Featured"}
+                              </Badge>
+                            )}
+                          </CardTitle>
+                          {description && <CardDescription>{description}</CardDescription>}
+                        </CardHeader>
+                        <CardContent>
+                          <a 
+                            href={`/content/${guide.id}`}
+                            className="text-sm text-primary hover:underline flex items-center space-x-1"
+                          >
+                            <Building className="h-3 w-3" />
+                            <span>{isBangla ? "বিস্তারিত দেখুন" : "View Details"}</span>
+                          </a>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </TabsContent>
+            ))}
+          </Tabs>
+        ) : (
+          <div className="text-center py-12 mb-16">
+            <p className="text-muted-foreground">
+              {isBangla ? "কোনো সেবা তথ্য পাওয়া যায়নি" : "No service information available"}
+            </p>
+          </div>
+        )}
 
         {/* Emergency Contacts */}
         <div>
-          <h2 className="mb-6 text-3xl font-bold text-foreground">জরুরি যোগাযোগ</h2>
+          <h2 className="mb-6 text-3xl font-bold text-foreground">
+            {isBangla ? "জরুরি যোগাযোগ" : "Emergency Contacts"}
+          </h2>
           <div className="grid gap-4 md:grid-cols-2">
             {emergencyContacts.map((contact, index) => (
               <Card key={index} className="border-l-4 border-l-secondary">
