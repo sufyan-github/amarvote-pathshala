@@ -66,6 +66,9 @@ const ContentDetail = () => {
       : null;
 
   const title = isBangla ? content.title_bn : content.title_en || content.title_bn;
+  const description = isBangla
+    ? content.description_bn
+    : content.description_en || content.description_bn;
   const contentText = isBangla
     ? content.content_bn
     : content.content_en || content.content_bn;
@@ -86,8 +89,9 @@ const ContentDetail = () => {
         </Button>
 
         {/* Content Header */}
-        <div className="mb-8">
-          <div className="flex flex-wrap gap-2 mb-4">
+        <header className="mb-8 space-y-4">
+          {/* Category and Featured Badges */}
+          <div className="flex flex-wrap gap-2">
             <Badge variant="secondary" className="capitalize">
               {content.category.replace("-", " ")}
             </Badge>
@@ -98,22 +102,33 @@ const ContentDetail = () => {
             )}
           </div>
 
-          <h1 className="text-4xl font-bold mb-4 leading-tight">{title}</h1>
+          {/* Title */}
+          <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight">
+            {title}
+          </h1>
 
+          {/* Description */}
+          {description && (
+            <p className="text-xl text-muted-foreground leading-relaxed">
+              {description}
+            </p>
+          )}
+
+          {/* Tags */}
           {content.tags && content.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 pt-2">
               {content.tags.map((tag, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-1 text-sm text-muted-foreground"
+                  className="flex items-center gap-1.5 text-sm text-muted-foreground bg-secondary/50 px-3 py-1 rounded-full"
                 >
-                  <Tag className="w-3 h-3" />
+                  <Tag className="w-3.5 h-3.5" />
                   <span>{tag}</span>
                 </div>
               ))}
             </div>
           )}
-        </div>
+        </header>
 
         {/* Main Content */}
         <Card className="mb-8">
