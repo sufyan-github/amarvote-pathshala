@@ -1,218 +1,189 @@
+import { useTranslation } from "react-i18next";
 import { Navigation } from "@/components/Navigation";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ContentCard } from "@/components/ContentCard";
+import { useContent } from "@/hooks/useContent";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, AlertTriangle, Lock, Users } from "lucide-react";
-import { useContent } from "@/hooks/useContent";
-import { useLanguage } from "@/hooks/useLanguage";
-import { useTranslation } from "react-i18next";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Shield, Scale, Users, BookOpen } from "lucide-react";
 
 const Rights = () => {
-  const { data: rightsContent, isLoading } = useContent('rights');
-  const { isBangla } = useLanguage();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { data: rightsContent, isLoading } = useContent("rights", "module");
 
-  // Organize content by type
-  const rights = rightsContent?.filter(item => item.type === 'right') || [];
-  const responsibilities = rightsContent?.filter(item => item.type === 'responsibility') || [];
-  const digitalSafety = rightsContent?.filter(item => item.type === 'digital-safety') || [];
-  const emergencyContacts = rightsContent?.filter(item => item.type === 'emergency-contact') || [];
+  const categories = [
+    {
+      id: "constitution",
+      icon: BookOpen,
+      title: i18n.language === 'bn' ? 'সংবিধান' : 'Constitution',
+      description: i18n.language === 'bn' 
+        ? 'বাংলাদেশের সংবিধানে বর্ণিত মৌলিক অধিকার সম্পর্কে জানুন'
+        : 'Learn about fundamental rights in Bangladesh Constitution',
+    },
+    {
+      id: "citizen",
+      icon: Users,
+      title: i18n.language === 'bn' ? 'নাগরিক দায়িত্ব' : 'Citizen Duties',
+      description: i18n.language === 'bn'
+        ? 'একজন দায়িত্বশীল নাগরিক হিসেবে আপনার কর্তব্য'
+        : 'Your duties as a responsible citizen',
+    },
+    {
+      id: "government",
+      icon: Scale,
+      title: i18n.language === 'bn' ? 'সরকারের দায়বদ্ধতা' : 'Government Duties',
+      description: i18n.language === 'bn'
+        ? 'নাগরিকদের প্রতি সরকার ও রাষ্ট্রের সাংবিধানিক দায়বদ্ধতা'
+        : 'Constitutional liabilities of government towards citizens',
+    },
+  ];
+
+  const getContentForCategory = (categoryId: string) => {
+    if (!rightsContent) return [];
+    
+    const keywords: { [key: string]: string[] } = {
+      constitution: ['constitution', 'fundamental rights', 'সংবিধান', 'মৌলিক অধিকার'],
+      citizen: ['citizen', 'responsibilities', 'duties', 'নাগরিক দায়িত্ব', 'কর্তব্য'],
+      government: ['government', 'liability', 'state', 'সরকার', 'দায়বদ্ধতা', 'রাষ্ট্র'],
+    };
+    
+    return rightsContent.filter(content => {
+      const searchText = (
+        content.title_bn + ' ' + 
+        content.title_en + ' ' + 
+        (content.description_bn || '') + ' ' +
+        (content.description_en || '') +
+        (content.tags?.join(' ') || '')
+      ).toLowerCase();
+      
+      return keywords[categoryId]?.some(keyword => 
+        searchText.includes(keyword.toLowerCase())
+      );
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      
-      <div className="container px-4 py-12">
-        <div className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-foreground">
-            {isBangla ? 'অধিকার ও দায়িত্ব' : 'Rights & Responsibilities'}
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            {isBangla 
-              ? 'একজন সচেতন নাগরিক হিসেবে আপনার অধিকার ও দায়িত্ব জানুন'
-              : 'Know your rights and responsibilities as an informed citizen'
-            }
-          </p>
-        </div>
-
-        {isLoading ? (
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <Skeleton className="h-10 w-64" />
-              <div className="grid gap-4 md:grid-cols-2">
-                {[1, 2, 3, 4].map((i) => (
-                  <Skeleton key={i} className="h-32" />
-                ))}
-              </div>
+      <main className="pt-20">
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Shield className="h-10 w-10 text-primary" />
+              <h1 className="text-4xl font-bold">{t("rights.title")}</h1>
             </div>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              {t("rights.subtitle")}
+            </p>
           </div>
-        ) : (
-          <Tabs defaultValue="rights" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-8">
-              <TabsTrigger value="rights">
-                <Shield className="h-4 w-4 mr-2" />
-                {isBangla ? 'অধিকার' : 'Rights'}
-              </TabsTrigger>
-              <TabsTrigger value="responsibilities">
-                <Users className="h-4 w-4 mr-2" />
-                {isBangla ? 'দায়িত্ব' : 'Responsibilities'}
-              </TabsTrigger>
-              <TabsTrigger value="digital-safety">
-                <Lock className="h-4 w-4 mr-2" />
-                {isBangla ? 'ডিজিটাল নিরাপত্তা' : 'Digital Safety'}
-              </TabsTrigger>
-              <TabsTrigger value="emergency">
-                <AlertTriangle className="h-4 w-4 mr-2" />
-                {isBangla ? 'জরুরি যোগাযোগ' : 'Emergency'}
-              </TabsTrigger>
+
+          <Tabs defaultValue="constitution" className="space-y-8">
+            <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto">
+              {categories.map((category) => {
+                const Icon = category.icon;
+                return (
+                  <TabsTrigger
+                    key={category.id}
+                    value={category.id}
+                    className="flex flex-col items-center gap-2 py-4"
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span>{category.title}</span>
+                  </TabsTrigger>
+                );
+              })}
             </TabsList>
 
-            {/* Rights Section */}
-            <TabsContent value="rights">
-              <div className="mb-6 flex items-center space-x-3">
-                <Shield className="h-8 w-8 text-primary" />
-                <h2 className="text-3xl font-bold text-foreground">
-                  {isBangla ? 'নাগরিক অধিকার' : 'Citizens Rights'}
-                </h2>
-              </div>
-              {rights.length > 0 ? (
-                <div className="grid gap-4 md:grid-cols-2">
-                  {rights.map((right) => (
-                    <Card key={right.id}>
-                      <CardHeader>
-                        <CardTitle className="text-xl">
-                          {isBangla ? right.title_bn : right.title_en || right.title_bn}
-                        </CardTitle>
-                        <CardDescription className="text-base">
-                          {isBangla ? right.description_bn : right.description_en || right.description_bn}
-                        </CardDescription>
-                      </CardHeader>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-muted-foreground text-center py-8">
-                  {isBangla ? 'কোনো বিষয়বস্তু পাওয়া যায়নি' : 'No content available'}
-                </p>
-              )}
-            </TabsContent>
-
-            {/* Responsibilities Section */}
-            <TabsContent value="responsibilities">
-              <div className="mb-6 flex items-center space-x-3">
-                <Users className="h-8 w-8 text-secondary" />
-                <h2 className="text-3xl font-bold text-foreground">
-                  {isBangla ? 'নাগরিক দায়িত্ব' : 'Citizens Responsibilities'}
-                </h2>
-              </div>
-              {responsibilities.length > 0 ? (
-                <div className="grid gap-4 md:grid-cols-2">
-                  {responsibilities.map((resp) => (
-                    <Card key={resp.id}>
-                      <CardHeader>
-                        <CardTitle className="text-xl">
-                          {isBangla ? resp.title_bn : resp.title_en || resp.title_bn}
-                        </CardTitle>
-                        <CardDescription className="text-base">
-                          {isBangla ? resp.description_bn : resp.description_en || resp.description_bn}
-                        </CardDescription>
-                      </CardHeader>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-muted-foreground text-center py-8">
-                  {isBangla ? 'কোনো বিষয়বস্তু পাওয়া যায়নি' : 'No content available'}
-                </p>
-              )}
-            </TabsContent>
-
-            {/* Digital Safety Section */}
-            <TabsContent value="digital-safety">
-              <div className="mb-6 flex items-center space-x-3">
-                <Lock className="h-8 w-8 text-accent" />
-                <h2 className="text-3xl font-bold text-foreground">
-                  {isBangla ? 'ডিজিটাল নিরাপত্তা' : 'Digital Safety'}
-                </h2>
-              </div>
+            {categories.map((category) => {
+              const Icon = category.icon;
+              const categoryContent = getContentForCategory(category.id);
               
-              <Alert className="mb-6 border-secondary">
-                <AlertTriangle className="h-5 w-5 text-secondary" />
-                <AlertDescription className="text-base">
-                  {isBangla 
-                    ? 'অনলাইনে সতর্ক থাকুন। ভুল তথ্য ছড়ানো থেকে বিরত থাকুন এবং নিজের তথ্য সুরক্ষিত রাখুন।'
-                    : 'Stay alert online. Avoid spreading misinformation and keep your information secure.'
-                  }
-                </AlertDescription>
-              </Alert>
-
-              {digitalSafety.length > 0 ? (
-                <div className="grid gap-4 md:grid-cols-2">
-                  {digitalSafety.map((safety) => (
-                    <Card key={safety.id} className="border-l-4 border-l-accent">
-                      <CardHeader>
-                        <CardTitle className="text-lg">
-                          {isBangla ? safety.title_bn : safety.title_en || safety.title_bn}
-                        </CardTitle>
-                        <CardDescription className="text-base">
-                          {isBangla ? safety.description_bn : safety.description_en || safety.description_bn}
-                        </CardDescription>
-                      </CardHeader>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-muted-foreground text-center py-8">
-                  {isBangla ? 'কোনো বিষয়বস্তু পাওয়া যায়নি' : 'No content available'}
-                </p>
-              )}
-            </TabsContent>
-
-            {/* Emergency Contacts Section */}
-            <TabsContent value="emergency">
-              <div className="mb-6 flex items-center space-x-3">
-                <AlertTriangle className="h-8 w-8 text-destructive" />
-                <h2 className="text-3xl font-bold text-foreground">
-                  {isBangla ? 'জরুরি যোগাযোগ' : 'Emergency Contacts'}
-                </h2>
-              </div>
-
-              {emergencyContacts.length > 0 ? (
-                <div className="grid gap-4 md:grid-cols-2">
-                  {emergencyContacts.map((contact) => (
-                    <Card key={contact.id} className="border-l-4 border-l-destructive">
-                      <CardHeader>
-                        <CardTitle className="text-xl">
-                          {isBangla ? contact.title_bn : contact.title_en || contact.title_bn}
-                        </CardTitle>
-                        <CardDescription className="text-base">
-                          {isBangla ? contact.description_bn : contact.description_en || contact.description_bn}
-                        </CardDescription>
-                      </CardHeader>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <Card className="bg-muted/50">
-                  <CardHeader>
-                    <CardTitle className="text-xl">
-                      {isBangla ? 'সাইবার অপরাধ রিপোর্ট করুন' : 'Report Cyber Crime'}
-                    </CardTitle>
-                    <CardDescription className="text-base">
-                      <div className="space-y-2 mt-2">
-                        <p><strong>{isBangla ? 'হটলাইন:' : 'Hotline:'}</strong> 01320000888</p>
-                        <p><strong>{isBangla ? 'ইমেইল:' : 'Email:'}</strong> info@cid.gov.bd</p>
-                        <p><strong>{isBangla ? 'ওয়েবসাইট:' : 'Website:'}</strong> www.cid.gov.bd</p>
+              return (
+                <TabsContent key={category.id} value={category.id} className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <div className="flex items-center gap-3">
+                        <div className="p-3 rounded-lg bg-primary/10">
+                          <Icon className="h-6 w-6 text-primary" />
+                        </div>
+                        <div>
+                          <CardTitle>{category.title}</CardTitle>
+                          <CardDescription className="mt-1">
+                            {category.description}
+                          </CardDescription>
+                        </div>
                       </div>
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              )}
-            </TabsContent>
+                    </CardHeader>
+                  </Card>
+
+                  {isLoading ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {[1, 2, 3].map((i) => (
+                        <Skeleton key={i} className="h-64" />
+                      ))}
+                    </div>
+                  ) : categoryContent.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {categoryContent.map((content) => (
+                        <ContentCard
+                          key={content.id}
+                          id={content.id}
+                          titleBn={content.title_bn}
+                          titleEn={content.title_en}
+                          descriptionBn={content.description_bn}
+                          descriptionEn={content.description_en}
+                          category={content.category}
+                          type={content.type}
+                          featured={content.featured}
+                          tags={content.tags}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <Card>
+                      <CardContent className="py-12 text-center">
+                        <p className="text-muted-foreground">
+                          {i18n.language === 'bn'
+                            ? 'এই বিভাগে শীঘ্রই কন্টেন্ট যুক্ত করা হবে'
+                            : 'Content will be added to this section soon'}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  )}
+                </TabsContent>
+              );
+            })}
           </Tabs>
-        )}
-      </div>
+
+          <Card className="mt-12 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-6 w-6 text-primary" />
+                {i18n.language === 'bn' ? 'গুরুত্বপূর্ণ তথ্য' : 'Important Information'}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <h4 className="font-semibold mb-2">
+                  {i18n.language === 'bn' ? 'সাহায্যের জন্য যোগাযোগ:' : 'Contact for Help:'}
+                </h4>
+                <ul className="space-y-1 text-sm text-muted-foreground">
+                  <li>• {i18n.language === 'bn' ? 'জাতীয় মানবাধিকার কমিশন' : 'National Human Rights Commission'}: 09666-718948</li>
+                  <li>• {i18n.language === 'bn' ? 'তথ্য অধিকার কমিশন' : 'Information Commission'}: 02-9555691</li>
+                  <li>• {i18n.language === 'bn' ? 'দুর্নীতি দমন কমিশন' : 'Anti-Corruption Commission'}: 106</li>
+                  <li>• {i18n.language === 'bn' ? 'আইনি সহায়তা' : 'Legal Aid'}: 16430</li>
+                  <li>• {i18n.language === 'bn' ? 'জাতীয় জরুরি সেবা' : 'National Emergency Service'}: 999</li>
+                </ul>
+              </div>
+              <p className="text-sm text-muted-foreground italic">
+                {i18n.language === 'bn'
+                  ? 'মনে রাখবেন: অধিকার এবং দায়িত্ব একসাথে চলে। দায়িত্বশীল নাগরিক হিসেবে আপনার অধিকার রক্ষা করুন এবং কর্তব্য পালন করুন।'
+                  : 'Remember: Rights and responsibilities go together. As a responsible citizen, protect your rights and fulfill your duties.'}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
     </div>
   );
 };
