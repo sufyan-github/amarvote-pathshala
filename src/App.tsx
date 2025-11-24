@@ -9,6 +9,7 @@ import CivicServices from "./pages/CivicServices";
 import Rights from "./pages/Rights";
 import Search from "./pages/Search";
 import Auth from "./pages/Auth";
+import ContentDetail from "./pages/ContentDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/rights" element={<Rights />} />
           <Route path="/search" element={<Search />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/content/:id" element={<ContentDetail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
