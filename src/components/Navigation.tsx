@@ -5,9 +5,12 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export const Navigation = () => {
   const location = useLocation();
+  const { t } = useTranslation();
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -27,11 +30,11 @@ export const Navigation = () => {
   };
 
   const navItems = [
-    { path: "/", label: "হোম", icon: Home },
-    { path: "/voter-education", label: "ভোটার শিক্ষা", icon: BookOpen },
-    { path: "/civic-services", label: "নাগরিক সেবা", icon: FileText },
-    { path: "/rights", label: "অধিকার ও দায়িত্ব", icon: Shield },
-    { path: "/search", label: "খুঁজুন", icon: Search },
+    { path: "/", label: t('nav.home'), icon: Home },
+    { path: "/voter-education", label: t('nav.voterEducation'), icon: BookOpen },
+    { path: "/civic-services", label: t('nav.civicServices'), icon: FileText },
+    { path: "/rights", label: t('nav.rights'), icon: Shield },
+    { path: "/search", label: t('nav.search'), icon: Search },
   ];
 
   return (
@@ -66,16 +69,17 @@ export const Navigation = () => {
         </div>
 
         <div className="flex items-center space-x-2">
+          <LanguageSwitcher />
           {user ? (
             <Button onClick={handleLogout} variant="outline" size="sm">
               <LogOut className="h-4 w-4 mr-2" />
-              লগআউট
+              {t('nav.logout')}
             </Button>
           ) : (
             <Link to="/auth">
               <Button variant="default" size="sm">
                 <LogIn className="h-4 w-4 mr-2" />
-                লগইন
+                {t('nav.login')}
               </Button>
             </Link>
           )}

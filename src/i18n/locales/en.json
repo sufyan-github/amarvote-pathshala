@@ -1,0 +1,95 @@
+{
+  "nav": {
+    "home": "Home",
+    "voterEducation": "Voter Education",
+    "civicServices": "Civic Services",
+    "rights": "Rights & Duties",
+    "search": "Search",
+    "login": "Login",
+    "logout": "Logout",
+    "signup": "Sign Up"
+  },
+  "home": {
+    "hero": {
+      "title": "AmarVote Pathshala",
+      "subtitle": "Voter Education and Civic Services for Citizens of Bangladesh",
+      "description": "Learn about your voting rights, access civic services, and become an informed citizen",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More"
+    },
+    "features": {
+      "title": "Our Services",
+      "voterEducation": {
+        "title": "Voter Education",
+        "description": "Learn about the voting process, rights, and responsibilities"
+      },
+      "civicServices": {
+        "title": "Civic Services",
+        "description": "NID, Passport, Birth Registration and more"
+      },
+      "rights": {
+        "title": "Rights & Duties",
+        "description": "Know your civic rights and responsibilities"
+      }
+    }
+  },
+  "voterEducation": {
+    "title": "Voter Education",
+    "subtitle": "Learn about the voting process and become an informed voter",
+    "modules": "Education Modules",
+    "loading": "Loading...",
+    "noContent": "No content found",
+    "featured": "Featured",
+    "readMore": "Read More",
+    "startLearning": "Start Learning",
+    "completed": "Completed"
+  },
+  "civicServices": {
+    "title": "Civic Services",
+    "subtitle": "Access government services and documents",
+    "services": "Services"
+  },
+  "rights": {
+    "title": "Rights & Duties",
+    "subtitle": "Know your civic rights and responsibilities"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search content...",
+    "noResults": "No results found",
+    "results": "Results"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full Name",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "signInHere": "Sign in here",
+    "signUpHere": "Sign up here",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "language": "Language",
+    "bangla": "বাংলা",
+    "english": "English"
+  }
+}
