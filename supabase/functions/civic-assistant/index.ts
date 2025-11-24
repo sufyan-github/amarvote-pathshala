@@ -71,6 +71,66 @@ Key information sources:
 - Emergency Helpline: 999 (National Emergency Service)
 - Election Commission Helpline: 105`;
 
+    // First, get the response with suggested questions using tool calling
+    const toolResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...messages,
+        ],
+        temperature: 0.7,
+        max_tokens: 1000,
+        tools: [
+          {
+            type: "function",
+            name: "suggest_followup_questions",
+            description: "Provide 3 relevant follow-up questions based on the conversation to help the user learn more",
+            parameters: {
+              type: "object",
+              properties: {
+                questions: {
+                  type: "array",
+                  items: {
+                    type: "string"
+                  },
+                  description: "Array of 3 follow-up questions in the same language as the conversation"
+                }
+              },
+              required: ["questions"],
+              additionalProperties: false
+            }
+          }
+        ],
+        tool_choice: { type: "function", function: { name: "suggest_followup_questions" } }
+      }),
+    });
+
+    if (!toolResponse.ok) {
+      console.error('Tool call failed:', await toolResponse.text());
+    }
+
+    const toolData = await toolResponse.json();
+    let followUpQuestions: string[] = [];
+    
+    try {
+      const toolCall = toolData.choices?.[0]?.message?.tool_calls?.[0];
+      if (toolCall?.function?.arguments) {
+        const parsed = JSON.parse(toolCall.function.arguments);
+        followUpQuestions = parsed.questions || [];
+      }
+    } catch (e) {
+      console.error('Failed to parse follow-up questions:', e);
+    }
+
+    console.log('Follow-up questions generated:', followUpQuestions);
+
+    // Now stream the main response
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -109,7 +169,40 @@ Key information sources:
 
     console.log('Civic assistant chat streaming started');
 
-    return new Response(response.body, {
+    // Create a custom stream that includes follow-up questions at the end
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+    
+    const stream = new ReadableStream({
+      async start(controller) {
+        const reader = response.body!.getReader();
+        
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            controller.enqueue(value);
+          }
+          
+          // After streaming is complete, send follow-up questions as a custom event
+          if (followUpQuestions.length > 0) {
+            const followUpEvent = `data: ${JSON.stringify({
+              type: 'follow_up_questions',
+              questions: followUpQuestions
+            })}\n\n`;
+            controller.enqueue(encoder.encode(followUpEvent));
+          }
+          
+          controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+        } catch (error) {
+          console.error('Stream error:', error);
+        } finally {
+          controller.close();
+        }
+      }
+    });
+
+    return new Response(stream, {
       headers: { ...corsHeaders, 'Content-Type': 'text/event-stream' }
     });
 

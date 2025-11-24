@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 interface Message {
   role: "user" | "assistant";
   content: string;
+  followUpQuestions?: string[];
 }
 
 export const CivicAssistant = () => {
@@ -33,15 +34,38 @@ export const CivicAssistant = () => {
     setIsLoading(true);
 
     let assistantMessage = "";
+    let followUpQuestions: string[] = [];
     
     const updateAssistantMessage = (chunk: string) => {
       assistantMessage += chunk;
       setMessages(prev => {
         const lastMessage = prev[prev.length - 1];
         if (lastMessage?.role === "assistant") {
-          return [...prev.slice(0, -1), { role: "assistant" as const, content: assistantMessage }];
+          return [...prev.slice(0, -1), { 
+            role: "assistant" as const, 
+            content: assistantMessage,
+            followUpQuestions: followUpQuestions.length > 0 ? followUpQuestions : undefined 
+          }];
         }
-        return [...prev, { role: "assistant" as const, content: assistantMessage }];
+        return [...prev, { 
+          role: "assistant" as const, 
+          content: assistantMessage,
+          followUpQuestions: followUpQuestions.length > 0 ? followUpQuestions : undefined
+        }];
+      });
+    };
+
+    const setFollowUpQuestions = (questions: string[]) => {
+      followUpQuestions = questions;
+      setMessages(prev => {
+        const lastMessage = prev[prev.length - 1];
+        if (lastMessage?.role === "assistant") {
+          return [...prev.slice(0, -1), { 
+            ...lastMessage,
+            followUpQuestions: questions 
+          }];
+        }
+        return prev;
       });
     };
 
@@ -97,6 +121,13 @@ export const CivicAssistant = () => {
 
           try {
             const parsed = JSON.parse(jsonStr);
+            
+            // Check for follow-up questions
+            if (parsed.type === 'follow_up_questions' && parsed.questions) {
+              setFollowUpQuestions(parsed.questions);
+              continue;
+            }
+            
             const content = parsed.choices?.[0]?.delta?.content as string | undefined;
             if (content) {
               updateAssistantMessage(content);
@@ -117,6 +148,12 @@ export const CivicAssistant = () => {
           if (jsonStr === "[DONE]") continue;
           try {
             const parsed = JSON.parse(jsonStr);
+            
+            if (parsed.type === 'follow_up_questions' && parsed.questions) {
+              setFollowUpQuestions(parsed.questions);
+              continue;
+            }
+            
             const content = parsed.choices?.[0]?.delta?.content as string | undefined;
             if (content) updateAssistantMessage(content);
           } catch {}
@@ -219,6 +256,30 @@ export const CivicAssistant = () => {
                   }`}
                 >
                   <p className="whitespace-pre-wrap">{msg.content}</p>
+                  
+                  {msg.role === "assistant" && msg.followUpQuestions && msg.followUpQuestions.length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-border/50">
+                      <p className="text-xs font-semibold mb-2 opacity-70">
+                        {i18n.language === 'bn' ? 'আরও জানুন:' : 'Learn more:'}
+                      </p>
+                      <div className="flex flex-col gap-2">
+                        {msg.followUpQuestions.map((question, qIdx) => (
+                          <Button
+                            key={qIdx}
+                            variant="ghost"
+                            size="sm"
+                            className="justify-start text-left h-auto py-2 px-3 text-xs hover:bg-background/50"
+                            onClick={() => {
+                              setInput(question);
+                            }}
+                            disabled={isLoading}
+                          >
+                            {question}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 {msg.role === "user" && (
                   <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center">
