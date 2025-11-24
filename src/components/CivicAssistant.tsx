@@ -34,38 +34,42 @@ export const CivicAssistant = () => {
     setIsLoading(true);
 
     let assistantMessage = "";
-    let followUpQuestions: string[] = [];
+    
+    const parseFollowUpQuestions = (text: string): { cleanText: string; questions: string[] } => {
+      const followUpMatch = text.match(/\[FOLLOWUP\]([\s\S]*?)\[\/FOLLOWUP\]/);
+      if (!followUpMatch) {
+        return { cleanText: text, questions: [] };
+      }
+      
+      const followUpSection = followUpMatch[1];
+      const questions = followUpSection
+        .split('\n')
+        .map(q => q.trim())
+        .filter(q => q.match(/^\d+\.\s+/))
+        .map(q => q.replace(/^\d+\.\s+/, ''));
+      
+      const cleanText = text.replace(/\[FOLLOWUP\][\s\S]*?\[\/FOLLOWUP\]/, '').trim();
+      return { cleanText, questions };
+    };
     
     const updateAssistantMessage = (chunk: string) => {
       assistantMessage += chunk;
+      const { cleanText, questions } = parseFollowUpQuestions(assistantMessage);
+      
       setMessages(prev => {
         const lastMessage = prev[prev.length - 1];
         if (lastMessage?.role === "assistant") {
           return [...prev.slice(0, -1), { 
             role: "assistant" as const, 
-            content: assistantMessage,
-            followUpQuestions: followUpQuestions.length > 0 ? followUpQuestions : undefined 
+            content: cleanText,
+            followUpQuestions: questions.length > 0 ? questions : undefined 
           }];
         }
         return [...prev, { 
           role: "assistant" as const, 
-          content: assistantMessage,
-          followUpQuestions: followUpQuestions.length > 0 ? followUpQuestions : undefined
+          content: cleanText,
+          followUpQuestions: questions.length > 0 ? questions : undefined
         }];
-      });
-    };
-
-    const setFollowUpQuestions = (questions: string[]) => {
-      followUpQuestions = questions;
-      setMessages(prev => {
-        const lastMessage = prev[prev.length - 1];
-        if (lastMessage?.role === "assistant") {
-          return [...prev.slice(0, -1), { 
-            ...lastMessage,
-            followUpQuestions: questions 
-          }];
-        }
-        return prev;
       });
     };
 
@@ -121,13 +125,6 @@ export const CivicAssistant = () => {
 
           try {
             const parsed = JSON.parse(jsonStr);
-            
-            // Check for follow-up questions
-            if (parsed.type === 'follow_up_questions' && parsed.questions) {
-              setFollowUpQuestions(parsed.questions);
-              continue;
-            }
-            
             const content = parsed.choices?.[0]?.delta?.content as string | undefined;
             if (content) {
               updateAssistantMessage(content);
@@ -148,12 +145,6 @@ export const CivicAssistant = () => {
           if (jsonStr === "[DONE]") continue;
           try {
             const parsed = JSON.parse(jsonStr);
-            
-            if (parsed.type === 'follow_up_questions' && parsed.questions) {
-              setFollowUpQuestions(parsed.questions);
-              continue;
-            }
-            
             const content = parsed.choices?.[0]?.delta?.content as string | undefined;
             if (content) updateAssistantMessage(content);
           } catch {}
