@@ -5,6 +5,7 @@
     "civicServices": "Civic Services",
     "rights": "Rights & Duties",
     "misinformationDetector": "Fact Check",
+    "features": "Features",
     "search": "Search",
     "login": "Login",
     "logout": "Logout",
@@ -92,6 +93,75 @@
     "language": "Language",
     "bangla": "বাংলা",
     "english": "English"
+  },
+  "features": {
+    "title": "Platform Features & Roadmap",
+    "subtitle": "Comprehensive features for civic education and democratic participation in Bangladesh",
+    "categories": {
+      "core": "Core Features",
+      "coreDesc": "Essential features currently implemented in the platform",
+      "enhanced": "Enhanced Features",
+      "enhancedDesc": "Planned features to improve user experience and engagement",
+      "advanced": "Advanced Features",
+      "advancedDesc": "Future innovations for comprehensive civic empowerment"
+    },
+    "core": {
+      "voterEducation": "Voter Education System",
+      "voterEducationDesc": "Complete modules on voting eligibility, registration process, NID information, voter rights, EVM usage, and first-time voter guides with bilingual support",
+      "civicServices": "Government Services Hub",
+      "civicServicesDesc": "Step-by-step guides for NID services, passport, birth registration, healthcare, RTI requests, and social safety nets with helpline numbers",
+      "rights": "Rights & Responsibilities",
+      "rightsDesc": "Educational content on constitutional rights, democratic duties, legal protections, and civic responsibilities of citizens",
+      "misinformation": "AI Misinformation Detector",
+      "misinformationDesc": "AI-powered fact-checking tool that analyzes text and images to identify false information about elections and civic matters",
+      "search": "Smart Search",
+      "searchDesc": "Comprehensive search functionality to find educational content across all modules quickly"
+    },
+    "enhanced": {
+      "audioNarration": "Audio Narration & Text-to-Speech",
+      "audioNarrationDesc": "Full audio support in Bangla and English for all content, making the platform accessible to low-literacy users and visually impaired citizens",
+      "aiChatbot": "AI Civic Assistant Chatbot",
+      "aiChatbotDesc": "Conversational AI assistant to answer questions about voting, government services, and civic rights in real-time with multilingual support",
+      "videoTutorials": "Video Tutorial Library",
+      "videoTutorialsDesc": "Step-by-step video guides demonstrating government service processes, voting procedures, and civic participation with Bangla narration",
+      "digitalStories": "Digital Storytelling for Democracy",
+      "digitalStoriesDesc": "Engaging, regionally localized stories about democratic participation, voting experiences, and civic success stories to inspire citizens",
+      "progressTracking": "Learning Progress & Achievements",
+      "progressTrackingDesc": "Gamified learning paths, completion tracking, and achievement badges to motivate continued civic education",
+      "notifications": "Smart Notifications & Reminders",
+      "notificationsDesc": "Personalized alerts for election dates, document renewal deadlines, new content, and important civic announcements"
+    },
+    "advanced": {
+      "offlineMode": "Offline Access Mode",
+      "offlineModeDesc": "Download educational content for offline access, crucial for rural areas with limited internet connectivity",
+      "voiceSearch": "Voice Search & Navigation",
+      "voiceSearchDesc": "Voice-activated search and navigation in Bangla and English for hands-free accessibility and low-literacy support",
+      "pollingStations": "Polling Station Locator",
+      "pollingStationsDesc": "GPS-based finder to locate nearest polling stations with directions, accessibility information, and crowd estimates",
+      "community": "Community Q&A Forum",
+      "communityDesc": "Moderated community space for citizens to ask questions, share experiences, and help each other with civic processes",
+      "socialSharing": "Social Media Integration",
+      "socialSharingDesc": "Share educational content, fact-checks, and civic achievements on social platforms to spread awareness",
+      "volunteer": "Volunteer & Observer Network",
+      "volunteerDesc": "Connect citizens with election observation opportunities, civic volunteering, and grassroots democracy initiatives",
+      "analytics": "Impact Analytics Dashboard",
+      "analyticsDesc": "Transparent dashboard showing platform reach, learning outcomes, regional engagement, and democratic participation impact"
+    },
+    "status": {
+      "implemented": "Live",
+      "planned": "Planned",
+      "future": "Future"
+    },
+    "competitive": {
+      "title": "Competitive Advantages for Democracy",
+      "description": "What makes AmarVote Pathshala a comprehensive solution for civic education in Bangladesh",
+      "innovation": "AI-Powered Innovation",
+      "innovationDesc": "First platform in Bangladesh using AI for misinformation detection and civic education assistance",
+      "accessibility": "Universal Accessibility",
+      "accessibilityDesc": "Designed for low-literacy users, rural communities, and marginalized citizens with audio, video, and visual-first design",
+      "impact": "Measurable Social Impact",
+      "impactDesc": "Focused on strengthening democratic participation ahead of 2026 elections with transparent analytics and community reach"
+    }
   },
   "error": "Error"
 }
